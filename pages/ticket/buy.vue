@@ -1,6 +1,5 @@
 <template>
   <view class="ticket-buy">
-    <!-- 电影和影院信息 -->
     <view class="movie-cinema-info">
       <view class="movie-info">
         <text class="movie-title">{{ movie.title }}</text>
@@ -12,29 +11,29 @@
       </view>
     </view>
 
-    <!-- 座位选择 -->
     <view class="seat-selection">
       <text class="section-title">选择座位</text>
       <view class="screen">
         <text class="screen-text">屏幕</text>
       </view>
-      <view class="seats-container">
-        <view class="row" v-for="(row, rowIndex) in seats" :key="rowIndex">
-          <text class="row-number">{{ String.fromCharCode(65 + rowIndex) }}</text>
-          <view class="seats">
-            <view class="seat" 
-                  :class="{ 
-                    'occupied': seat.status === 'occupied',
-                    'selected': seat.status === 'selected'
-                  }" 
-                  v-for="(seat, seatIndex) in row" 
-                  :key="seatIndex"
-                  @click="selectSeat(rowIndex, seatIndex)">
-              <text class="seat-number">{{ seatIndex + 1 }}</text>
+      <scroll-view class="seats-scroll" scroll-x="true">
+        <view class="seats-container">
+          <view class="row" v-for="(row, rowIndex) in seats" :key="rowIndex">
+            <text class="row-number">{{ String.fromCharCode(65 + rowIndex) }}</text>
+            <view class="seats">
+              <view class="seat"
+                    :class="{
+                      'occupied': seat.status === 'occupied',
+                      'selected': seat.status === 'selected'
+                    }"
+                    v-for="(seat, seatIndex) in row"
+                    :key="seatIndex"
+                    @click="selectSeat(rowIndex, seatIndex)">
+              </view>
             </view>
           </view>
         </view>
-      </view>
+      </scroll-view>
       <view class="seat-legend">
         <view class="legend-item">
           <view class="legend-seat available"></view>
@@ -51,28 +50,32 @@
       </view>
     </view>
 
-    <!-- 购票数量和价格 -->
     <view class="ticket-info">
       <view class="ticket-count">
-        <text>数量</text>
+        <text class="info-label">数量</text>
         <view class="count-control">
-          <button class="count-btn" @click="decreaseCount" :disabled="ticketCount <= 1">-</button>
+          <view class="count-btn" @click="decreaseCount">
+            <text>-</text>
+          </view>
           <text class="count">{{ ticketCount }}</text>
-          <button class="count-btn" @click="increaseCount" :disabled="ticketCount >= 10">+</button>
+          <view class="count-btn" @click="increaseCount">
+            <text>+</text>
+          </view>
         </view>
       </view>
       <view class="ticket-price">
-        <text>总价</text>
+        <text class="info-label">总价</text>
         <text class="price">{{ totalPrice }}元</text>
       </view>
     </view>
 
-    <!-- 底部按钮 -->
     <view class="bottom-bar">
       <view class="selected-seats">
-        <text>已选座位: {{ selectedSeats.join(', ') }}</text>
+        <text>已选座位: {{ selectedSeats.join(', ') || '无' }}</text>
       </view>
-      <button class="buy-btn" @click="confirmPurchase">确认购票</button>
+      <view class="buy-btn" @click="confirmPurchase">
+        <text>确认购票</text>
+      </view>
     </view>
   </view>
 </template>
@@ -87,15 +90,15 @@ export default {
       ticketCount: 1,
       seatPrice: 80,
       seats: [
-        [{ status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'occupied' }, { status: 'occupied' }, { status: 'available' }, { status: 'available' }, { status: 'available' }],
-        [{ status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }],
-        [{ status: 'occupied' }, { status: 'occupied' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'occupied' }, { status: 'occupied' }],
-        [{ status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }],
-        [{ status: 'available' }, { status: 'available' }, { status: 'occupied' }, { status: 'occupied' }, { status: 'occupied' }, { status: 'occupied' }, { status: 'available' }, { status: 'available' }]
+        [{ status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'occupied' }, { status: 'occupied' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }],
+        [{ status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }],
+        [{ status: 'occupied' }, { status: 'occupied' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'occupied' }, { status: 'occupied' }, { status: 'available' }, { status: 'available' }],
+        [{ status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }],
+        [{ status: 'available' }, { status: 'available' }, { status: 'occupied' }, { status: 'occupied' }, { status: 'occupied' }, { status: 'occupied' }, { status: 'available' }, { status: 'available' }, { status: 'available' }, { status: 'available' }]
       ],
       movie: {
-        title: "阿凡达3",
-        duration: "180分钟"
+        title: "超级马力欧银河大电影",
+        duration: "98分钟"
       },
       cinema: {
         name: "万达影城(北京CBD店)",
@@ -122,8 +125,8 @@ export default {
   onLoad(options) {
     this.movieId = options.movieId
     this.cinemaId = options.cinemaId
-    this.selectedTime = options.time
-    // 实际项目中这里会根据movieId和cinemaId请求相关数据
+    this.selectedTime = options.time || '19:30'
+    this.seatPrice = parseInt(options.price) || 80
   },
   methods: {
     selectSeat(rowIndex, seatIndex) {
@@ -157,7 +160,6 @@ export default {
         title: '购票成功',
         icon: 'success'
       })
-      // 实际项目中这里会调用支付接口
     }
   }
 }
@@ -167,87 +169,91 @@ export default {
 .ticket-buy {
   background-color: #f5f5f5;
   min-height: 100vh;
-  padding-bottom: 60px;
+  padding-bottom: 140rpx;
 }
 
 .movie-cinema-info {
   background-color: #fff;
-  padding: 15px;
-  margin-bottom: 10px;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
 }
 
 .movie-info {
-  margin-bottom: 10px;
+  margin-bottom: 20rpx;
 }
 
 .movie-title {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: bold;
   color: #333;
-  margin-bottom: 5px;
+  margin-bottom: 10rpx;
   display: block;
 }
 
 .movie-time {
-  font-size: 14px;
+  font-size: 26rpx;
   color: #666;
   display: block;
 }
 
 .cinema-info {
   border-top: 1px solid #eee;
-  padding-top: 10px;
+  padding-top: 20rpx;
 }
 
 .cinema-name {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: bold;
   color: #333;
-  margin-bottom: 5px;
+  margin-bottom: 8rpx;
   display: block;
 }
 
 .cinema-address {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #999;
   display: block;
 }
 
 .seat-selection {
   background-color: #fff;
-  padding: 15px;
-  margin-bottom: 10px;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
 }
 
 .section-title {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: bold;
   color: #333;
-  margin-bottom: 15px;
+  margin-bottom: 30rpx;
   display: block;
 }
 
 .screen {
   width: 100%;
-  height: 40px;
-  background-color: #f0f0f0;
-  border-radius: 4px;
+  height: 80rpx;
+  background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+  border-radius: 8rpx;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 40rpx;
 }
 
 .screen-text {
-  font-size: 14px;
+  font-size: 26rpx;
   color: #666;
+}
+
+.seats-scroll {
+  overflow-x: auto;
 }
 
 .seats-container {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 20rpx;
+  padding: 0 10rpx;
 }
 
 .row {
@@ -256,59 +262,55 @@ export default {
 }
 
 .row-number {
-  width: 20px;
-  font-size: 12px;
+  width: 40rpx;
+  font-size: 24rpx;
   color: #666;
-  margin-right: 10px;
+  margin-right: 20rpx;
+  text-align: center;
 }
 
 .seats {
   display: flex;
-  gap: 10px;
-  flex: 1;
+  gap: 12rpx;
 }
 
 .seat {
-  width: 30px;
-  height: 30px;
-  border-radius: 4px;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 8rpx;
   background-color: #e0e0e0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  color: #666;
+  flex-shrink: 0;
 }
 
 .seat.occupied {
   background-color: #999;
-  color: #fff;
 }
 
 .seat.selected {
   background-color: #ff4d4f;
-  color: #fff;
 }
 
 .seat-legend {
   display: flex;
-  justify-content: space-around;
-  padding-top: 15px;
+  justify-content: center;
+  gap: 60rpx;
+  padding-top: 30rpx;
   border-top: 1px solid #eee;
+  margin-top: 20rpx;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 12px;
+  gap: 10rpx;
+  font-size: 24rpx;
   color: #666;
 }
 
 .legend-seat {
-  width: 20px;
-  height: 20px;
-  border-radius: 2px;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 6rpx;
 }
 
 .legend-seat.available {
@@ -325,8 +327,8 @@ export default {
 
 .ticket-info {
   background-color: #fff;
-  padding: 15px;
-  margin-bottom: 10px;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -335,42 +337,51 @@ export default {
 .ticket-count {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 20rpx;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #333;
 }
 
 .count-control {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 30rpx;
 }
 
 .count-btn {
-  width: 30px;
-  height: 30px;
-  border: 1px solid #ddd;
+  width: 60rpx;
+  height: 60rpx;
+  border: 2rpx solid #ddd;
   background-color: #fff;
-  border-radius: 4px;
+  border-radius: 8rpx;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 16px;
+}
+
+.count-btn text {
+  font-size: 32rpx;
+  color: #333;
 }
 
 .count {
-  font-size: 16px;
+  font-size: 32rpx;
   color: #333;
-  min-width: 30px;
+  min-width: 60rpx;
   text-align: center;
 }
 
 .ticket-price {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16rpx;
 }
 
 .price {
-  font-size: 18px;
+  font-size: 36rpx;
   font-weight: bold;
   color: #ff4d4f;
 }
@@ -381,7 +392,7 @@ export default {
   left: 0;
   right: 0;
   background-color: #fff;
-  padding: 10px 15px;
+  padding: 20rpx 30rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -390,20 +401,23 @@ export default {
 
 .selected-seats {
   flex: 1;
-  font-size: 14px;
+  font-size: 26rpx;
   color: #333;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin-right: 20rpx;
 }
 
 .buy-btn {
   background-color: #ff4d4f;
+  padding: 20rpx 40rpx;
+  border-radius: 8rpx;
+}
+
+.buy-btn text {
+  font-size: 30rpx;
   color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-size: 14px;
   font-weight: bold;
 }
 </style>

@@ -1,40 +1,46 @@
 <template>
   <view class="movie-detail">
-    <!-- 电影信息 -->
-    <view class="movie-info">
-      <image :src="movie.poster" class="movie-poster"></image>
-      <view class="info-content">
-        <text class="movie-title">{{ movie.title }}</text>
-        <text class="movie-score">{{ movie.score }}</text>
-        <text class="movie-desc">{{ movie.desc }}</text>
-        <view class="movie-meta">
-          <text class="meta-item">{{ movie.duration }}</text>
-          <text class="meta-item">{{ movie.releaseDate }}</text>
-          <text class="meta-item">{{ movie.region }}</text>
-        </view>
-        <view class="movie-tags">
-          <text class="tag" v-for="(tag, index) in movie.tags" :key="index">{{ tag }}</text>
+    <view class="movie-header">
+      <image :src="movie.poster" class="poster-bg"></image>
+      <view class="header-overlay"></view>
+      <view class="movie-info">
+        <image :src="movie.poster" class="movie-poster"></image>
+        <view class="info-text">
+          <text class="movie-title">{{ movie.title }}</text>
+          <view class="movie-score" v-if="movie.score">
+            <text class="score-value">{{ movie.score }}</text>
+            <text class="score-label">分</text>
+          </view>
+          <text class="movie-type">{{ movie.type }}</text>
+          <text class="movie-meta">{{ movie.duration }} / {{ movie.region }} / {{ movie.language }}</text>
         </view>
       </view>
     </view>
 
-    <!-- 演员信息 -->
-    <view class="cast-info">
+    <view class="movie-desc">
+      <text class="section-title">简介</text>
+      <text class="desc-text" :class="{ expanded: isExpanded }">{{ movie.description }}</text>
+      <text class="expand-btn" @click="isExpanded = !isExpanded">{{ isExpanded ? '收起' : '展开' }}</text>
+    </view>
+
+    <view class="cast-section">
       <text class="section-title">演员</text>
-      <view class="cast-list">
+      <scroll-view class="cast-list" scroll-x="true" enhanced="true" show-scrollbar="false">
         <view class="cast-item" v-for="(cast, index) in movie.cast" :key="index">
-          <image :src="cast.avatar" class="cast-avatar"></image>
+          <view class="cast-avatar"></view>
           <text class="cast-name">{{ cast.name }}</text>
           <text class="cast-role">{{ cast.role }}</text>
         </view>
-      </view>
+      </scroll-view>
     </view>
 
-    <!-- 场次选择 -->
     <view class="showtimes">
-      <text class="section-title">选择场次</text>
+      <view class="showtimes-header">
+        <text class="section-title">选择场次</text>
+        <text class="show-date">{{ currentDate }}</text>
+      </view>
       <view class="date-tabs">
-        <view class="date-tab" :class="{ active: activeDate === date.date }" v-for="(date, index) in dates" :key="index" @click="activeDate = date.date">
+        <view class="date-tab" :class="{ active: activeDate === date.date }" v-for="(date, index) in dates" :key="index" @click="selectDate(date.date)">
           <text class="date-day">{{ date.day }}</text>
           <text class="date-week">{{ date.week }}</text>
         </view>
@@ -44,10 +50,14 @@
           <view class="cinema-info">
             <text class="cinema-name">{{ cinema.name }}</text>
             <text class="cinema-address">{{ cinema.address }}</text>
+            <view class="cinema-tags">
+              <text class="tag" v-for="(tag, tagIndex) in cinema.tags" :key="tagIndex">{{ tag }}</text>
+            </view>
           </view>
           <view class="time-list">
-            <view class="time-item" @click="goToBuyTicket(cinema.id, time)" v-for="(time, timeIndex) in cinema.times" :key="timeIndex">
+            <view class="time-item" v-for="(time, timeIndex) in cinema.times" :key="timeIndex" @click="goToBuyTicket(cinema.id, time)">
               <text class="time">{{ time.time }}</text>
+              <text class="hall">{{ time.hall }}</text>
               <text class="price">{{ time.price }}元</text>
             </view>
           </view>
@@ -62,7 +72,9 @@ export default {
   data() {
     return {
       movieId: '',
+      isExpanded: false,
       activeDate: '2026-04-02',
+      currentDate: '4月2日 周四',
       dates: [
         { date: '2026-04-02', day: '今天', week: '周四' },
         { date: '2026-04-03', day: '明天', week: '周五' },
@@ -72,18 +84,22 @@ export default {
       ],
       movie: {
         id: 1,
-        title: "阿凡达3",
+        title: "超级马力欧银河大电影",
         score: "9.2",
-        desc: "詹姆斯·卡梅隆执导的科幻巨制，讲述人类与纳美人的冲突与和解。故事发生在潘多拉星球，人类为了获取资源再次来到这里，与纳美人展开了新一轮的冲突。杰克·萨利和奈蒂莉必须带领纳美人保卫家园，同时揭开潘多拉星球的更多秘密。",
-        duration: "180分钟",
-        releaseDate: "2026-03-15",
+        type: "喜剧 / 动画 / 冒险 / 动作",
+        duration: "98分钟",
         region: "美国",
-        tags: ["科幻", "冒险", "3D"],
-        poster: "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Avatar%203%20movie%20poster%202026&image_size=portrait_4_3",
+        language: "英语",
+        releaseDate: "2026-04-03",
+        description: "超级马力欧银河大电影是亚伦·霍瓦斯、迈克尔·杰勒尼克执导，马修·福格尔担任编剧，克里斯·帕拉特、安雅·泰勒-乔伊、杰克·布莱克、查理·戴、吉甘-迈克尔·凯、布丽·拉尔森等参与配音，照明娱乐公司、任天堂制作的动画电影，该片定为《超级马力欧》的第2部动画电影。",
+        poster: "https://img.alicdn.com/tfs/TB1superMario.jpg",
+        director: "亚伦·霍瓦斯 / 迈克尔·杰勒尼克",
         cast: [
-          { name: "萨姆·沃辛顿", role: "杰克·萨利", avatar: "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=actor%20Sam%20Worthington%20portrait&image_size=square" },
-          { name: "佐伊·索尔达娜", role: "奈蒂莉", avatar: "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=actress%20Zoe%20Saldana%20portrait&image_size=square" },
-          { name: "西格妮·韦弗", role: "格蕾丝·奥古斯汀", avatar: "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=actress%20Sigourney%20Weaver%20portrait&image_size=square" }
+          { name: "克里斯·帕拉特", role: "马力欧(配音)" },
+          { name: "安雅·泰勒-乔伊", role: "桃花公主(配音)" },
+          { name: "杰克·布莱克", role: "酷霸王(配音)" },
+          { name: "查理·戴", role: "路易吉(配音)" },
+          { name: "布丽·拉尔森", role: "碧姬公主(配音)" }
         ]
       },
       cinemas: [
@@ -91,34 +107,37 @@ export default {
           id: 1,
           name: "万达影城(北京CBD店)",
           address: "北京市朝阳区建国路87号",
+          tags: ["杜比厅", "IMAX"],
           times: [
-            { time: "10:00", price: "60" },
-            { time: "13:30", price: "80" },
-            { time: "16:00", price: "80" },
-            { time: "19:30", price: "100" },
-            { time: "22:00", price: "80" }
+            { time: "10:30", hall: "IMAX厅", price: "79" },
+            { time: "13:15", hall: "杜比厅", price: "69" },
+            { time: "16:00", hall: "普通厅", price: "49" },
+            { time: "19:30", hall: "IMAX厅", price: "89" },
+            { time: "22:00", hall: "普通厅", price: "59" }
           ]
         },
         {
           id: 2,
           name: "CGV影城(北京五道口店)",
           address: "北京市海淀区成府路28号",
+          tags: ["4DX", "普通厅"],
           times: [
-            { time: "10:30", price: "55" },
-            { time: "14:00", price: "75" },
-            { time: "17:30", price: "75" },
-            { time: "20:00", price: "95" }
+            { time: "10:00", hall: "4DX厅", price: "99" },
+            { time: "12:45", hall: "普通厅", price: "45" },
+            { time: "15:30", hall: "普通厅", price: "45" },
+            { time: "18:15", hall: "4DX厅", price: "99" }
           ]
         },
         {
           id: 3,
           name: "UME影城(北京华星店)",
           address: "北京市海淀区中关村大街15号",
+          tags: ["REALD", "普通厅"],
           times: [
-            { time: "11:00", price: "58" },
-            { time: "14:30", price: "78" },
-            { time: "18:00", price: "78" },
-            { time: "21:30", price: "98" }
+            { time: "11:00", hall: "REALD厅", price: "55" },
+            { time: "14:00", hall: "普通厅", price: "39" },
+            { time: "17:00", hall: "REALD厅", price: "55" },
+            { time: "20:00", hall: "普通厅", price: "49" }
           ]
         }
       ]
@@ -126,12 +145,19 @@ export default {
   },
   onLoad(options) {
     this.movieId = options.id
-    // 实际项目中这里会根据movieId请求电影详情数据
   },
   methods: {
+    selectDate(date) {
+      this.activeDate = date
+      const dateObj = this.dates.find(d => d.date === date)
+      if (dateObj) {
+        const day = dateObj.day.replace('今天', '').replace('明天', '').replace('后天', '')
+        this.currentDate = `${day}${dateObj.week}`
+      }
+    },
     goToBuyTicket(cinemaId, time) {
       uni.navigateTo({
-        url: `/pages/ticket/buy?movieId=${this.movieId}&cinemaId=${cinemaId}&time=${time.time}`
+        url: `/pages/ticket/buy?movieId=${this.movieId}&cinemaId=${cinemaId}&time=${time.time}&hall=${time.hall}&price=${time.price}`
       })
     }
   }
@@ -142,138 +168,190 @@ export default {
 .movie-detail {
   background-color: #f5f5f5;
   min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+.movie-header {
+  position: relative;
+  height: 560rpx;
+}
+
+.poster-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  filter: blur(60rpx);
+  opacity: 0.3;
+}
+
+.header-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.8));
 }
 
 .movie-info {
+  position: relative;
+  z-index: 1;
   display: flex;
-  background-color: #fff;
-  padding: 20px;
-  margin-bottom: 10px;
+  padding: 60rpx 30rpx;
 }
 
 .movie-poster {
-  width: 120px;
-  height: 168px;
-  border-radius: 4px;
-  margin-right: 20px;
+  width: 240rpx;
+  height: 336rpx;
+  border-radius: 12rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
 }
 
-.info-content {
+.info-text {
   flex: 1;
+  margin-left: 30rpx;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-end;
+  padding-bottom: 20rpx;
 }
 
 .movie-title {
-  font-size: 20px;
+  font-size: 40rpx;
   font-weight: bold;
-  color: #333;
-  margin-bottom: 8px;
+  color: #fff;
+  margin-bottom: 20rpx;
 }
 
 .movie-score {
-  font-size: 16px;
-  color: #ff4d4f;
-  margin-bottom: 12px;
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 20rpx;
 }
 
-.movie-desc {
-  font-size: 14px;
-  color: #666;
-  line-height: 1.5;
-  margin-bottom: 12px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
+.score-value {
+  font-size: 56rpx;
+  font-weight: bold;
+  color: #ff4d4f;
+}
+
+.score-label {
+  font-size: 28rpx;
+  color: #ff4d4f;
+  margin-left: 4rpx;
+}
+
+.movie-type {
+  font-size: 26rpx;
+  color: #ccc;
+  margin-bottom: 12rpx;
 }
 
 .movie-meta {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 10px;
-}
-
-.meta-item {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #999;
 }
 
-.movie-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.tag {
-  font-size: 12px;
-  color: #666;
-  background-color: #f0f0f0;
-  padding: 2px 8px;
-  border-radius: 4px;
-}
-
-.cast-info {
+.movie-desc {
   background-color: #fff;
-  padding: 15px;
-  margin-bottom: 10px;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  position: relative;
 }
 
 .section-title {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: bold;
   color: #333;
-  margin-bottom: 15px;
+  margin-bottom: 20rpx;
+  display: block;
+}
+
+.desc-text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.desc-text.expanded {
+  display: block;
+}
+
+.expand-btn {
+  font-size: 26rpx;
+  color: #ff4d4f;
+  margin-top: 16rpx;
+}
+
+.cast-section {
+  background-color: #fff;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
 }
 
 .cast-list {
   display: flex;
-  overflow-x: auto;
-  gap: 15px;
-  padding-bottom: 10px;
+  white-space: nowrap;
+  gap: 30rpx;
 }
 
 .cast-item {
-  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 80px;
+  width: 140rpx;
+  flex-shrink: 0;
 }
 
 .cast-avatar {
-  width: 60px;
-  height: 60px;
+  width: 110rpx;
+  height: 110rpx;
   border-radius: 50%;
-  margin-bottom: 8px;
+  background: linear-gradient(135deg, #ff4d4f, #ff9900);
+  margin-bottom: 12rpx;
 }
 
 .cast-name {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #333;
-  margin-bottom: 4px;
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .cast-role {
-  font-size: 10px;
+  font-size: 20rpx;
   color: #999;
   text-align: center;
 }
 
 .showtimes {
   background-color: #fff;
-  padding: 15px;
+  padding: 30rpx;
+}
+
+.showtimes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.show-date {
+  font-size: 26rpx;
+  color: #ff4d4f;
 }
 
 .date-tabs {
   display: flex;
   overflow-x: auto;
-  gap: 10px;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
+  gap: 20rpx;
+  margin-bottom: 40rpx;
+  padding-bottom: 10rpx;
 }
 
 .date-tab {
@@ -281,80 +359,108 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
-  border-radius: 4px;
+  padding: 20rpx 24rpx;
+  border-radius: 12rpx;
   background-color: #f5f5f5;
-  min-width: 60px;
+  min-width: 110rpx;
 }
 
 .date-tab.active {
   background-color: #ff4d4f;
-  color: #fff;
 }
 
 .date-day {
-  font-size: 14px;
+  font-size: 28rpx;
   font-weight: bold;
-  margin-bottom: 4px;
+  color: #333;
+  margin-bottom: 4rpx;
 }
 
 .date-week {
-  font-size: 12px;
+  font-size: 22rpx;
+  color: #999;
+}
+
+.date-tab.active .date-day,
+.date-tab.active .date-week {
+  color: #fff;
 }
 
 .cinema-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 30rpx;
 }
 
 .cinema-item {
   border-top: 1px solid #eee;
-  padding-top: 15px;
+  padding-top: 30rpx;
 }
 
 .cinema-info {
-  margin-bottom: 10px;
+  margin-bottom: 24rpx;
 }
 
 .cinema-name {
-  font-size: 14px;
+  font-size: 30rpx;
   font-weight: bold;
   color: #333;
-  margin-bottom: 4px;
+  margin-bottom: 8rpx;
   display: block;
 }
 
 .cinema-address {
-  font-size: 12px;
+  font-size: 24rpx;
   color: #999;
   display: block;
+  margin-bottom: 12rpx;
+}
+
+.cinema-tags {
+  display: flex;
+  gap: 12rpx;
+}
+
+.tag {
+  font-size: 20rpx;
+  color: #ff9900;
+  background-color: #fff5e6;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
 }
 
 .time-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 20rpx;
 }
 
 .time-item {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 70px;
+  padding: 20rpx 28rpx;
+  border: 1px solid #ddd;
+  border-radius: 8rpx;
+  min-width: 150rpx;
 }
 
 .time {
-  font-size: 14px;
+  font-size: 30rpx;
+  font-weight: bold;
   color: #333;
-  margin-bottom: 4px;
+  margin-bottom: 4rpx;
+}
+
+.hall {
+  font-size: 20rpx;
+  color: #999;
+  margin-bottom: 8rpx;
 }
 
 .price {
-  font-size: 12px;
+  font-size: 28rpx;
   color: #ff4d4f;
+  font-weight: bold;
 }
 </style>

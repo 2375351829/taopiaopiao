@@ -1,44 +1,44 @@
 {
-  "name": "淘票票",
-  "appid": "wx1234567890",
-  "description": "淘票票微信小程序复刻",
-  "versionName": "1.0.0",
-  "versionCode": "1",
-  "transformPx": true,
-  "uni-app": {
-    "name": "淘票票",
-    "description": "淘票票微信小程序复刻",
-    "appid": "__UNI__123456",
-    "versionName": "1.0.0",
-    "versionCode": "1",
-    "transformPx": true
-  },
-  "mp-weixin": {
-    "appid": "wx1234567890",
-    "setting": {
-      "urlCheck": false,
-      "es6": true,
-      "postcss": true,
-      "preloadBackgroundData": false,
-      "minified": true,
-      "newFeature": false,
-      "coverView": true,
-      "nodeModules": false,
-      "autoAudits": false,
-      "showShadowRootInWxmlPanel": true,
-      "scopeDataCheck": false,
-      "uglifyFileName": false,
-      "checkInvalidKey": true,
-      "checkSiteMap": true,
-      "uploadWithSourceMap": true,
-      "compileHotReLoad": false,
-      "lazyloadPlaceholderEnable": false,
-      "packNpmManually": false,
-      "packNpmRelationList": [],
-      "minifyWXSS": true,
-      "minifyWXML": true,
-      "showES6CompileOption": false
+    "name" : "淘票票",
+    "appid" : "__UNI__4A14B02",
+    "description" : "淘票票微信小程序复刻",
+    "versionName" : "1.0.0",
+    "versionCode" : "1",
+    "transformPx" : true,
+    "uni-app" : {
+        "name" : "淘票票",
+        "description" : "淘票票微信小程序复刻",
+        "appid" : "",
+        "versionName" : "1.0.0",
+        "versionCode" : "1",
+        "transformPx" : true
     },
-    "usingComponents": true
-  }
+    "mp-weixin" : {
+        "appid" : "touristappid",
+        "setting" : {
+            "urlCheck" : false,
+            "es6" : true,
+            "postcss" : true,
+            "preloadBackgroundData" : false,
+            "minified" : true,
+            "newFeature" : false,
+            "coverView" : true,
+            "nodeModules" : false,
+            "autoAudits" : false,
+            "showShadowRootInWxmlPanel" : true,
+            "scopeDataCheck" : false,
+            "uglifyFileName" : false,
+            "checkInvalidKey" : true,
+            "checkSiteMap" : true,
+            "uploadWithSourceMap" : true,
+            "compileHotReLoad" : false,
+            "lazyloadPlaceholderEnable" : false,
+            "packNpmManually" : false,
+            "packNpmRelationList" : [],
+            "minifyWXSS" : true,
+            "minifyWXML" : true,
+            "showES6CompileOption" : false
+        },
+        "usingComponents" : true
+    }
 }

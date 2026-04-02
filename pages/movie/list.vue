@@ -1,6 +1,5 @@
 <template>
   <view class="movie-list">
-    <!-- 标签切换 -->
     <view class="tab-bar">
       <view class="tab-item" :class="{ active: activeTab === 'hot' }" @click="activeTab = 'hot'">
         <text>热映</text>
@@ -10,33 +9,46 @@
       </view>
     </view>
 
-    <!-- 电影列表 -->
     <view class="movies-container">
-      <!-- 热映电影 -->
       <view v-if="activeTab === 'hot'" class="movies">
-        <view class="movie-item" v-for="(movie, index) in hotMovies" :key="index" @click="goToMovieDetail(movie.id)">
-          <image :src="movie.poster" class="movie-poster"></image>
+        <view class="movie-card" v-for="(movie, index) in hotMovies" :key="index" @click="goToMovieDetail(movie.id)">
+          <image :src="movie.poster" class="movie-poster" mode="aspectFill"></image>
           <view class="movie-info">
-            <text class="movie-title">{{ movie.title }}</text>
-            <text class="movie-score">{{ movie.score }}</text>
-            <text class="movie-desc">{{ movie.desc }}</text>
-            <view class="movie-tags">
-              <text class="tag" v-for="(tag, tagIndex) in movie.tags" :key="tagIndex">{{ tag }}</text>
+            <view class="movie-header">
+              <text class="movie-title">{{ movie.title }}</text>
+              <view class="movie-score" v-if="movie.score">
+                <text class="score-value">{{ movie.score }}</text>
+              </view>
+            </view>
+            <text class="movie-type">{{ movie.type }}</text>
+            <text class="movie-actors">{{ movie.actors }}</text>
+            <view class="movie-footer">
+              <text class="movie-count" v-if="movie.wantCount">{{ movie.wantCount }}人想看</text>
+              <view class="buy-btn" v-if="movie.isShow">
+                <text>选座购票</text>
+              </view>
+              <view class="presell-btn" v-else>
+                <text>预映</text>
+              </view>
             </view>
           </view>
         </view>
       </view>
 
-      <!-- 即将上映电影 -->
       <view v-else class="movies">
-        <view class="movie-item" v-for="(movie, index) in comingMovies" :key="index" @click="goToMovieDetail(movie.id)">
-          <image :src="movie.poster" class="movie-poster"></image>
+        <view class="movie-card" v-for="(movie, index) in comingMovies" :key="index" @click="goToMovieDetail(movie.id)">
+          <image :src="movie.poster" class="movie-poster" mode="aspectFill"></image>
           <view class="movie-info">
-            <text class="movie-title">{{ movie.title }}</text>
-            <text class="movie-date">{{ movie.releaseDate }}</text>
-            <text class="movie-desc">{{ movie.desc }}</text>
-            <view class="movie-tags">
-              <text class="tag" v-for="(tag, tagIndex) in movie.tags" :key="tagIndex">{{ tag }}</text>
+            <view class="movie-header">
+              <text class="movie-title">{{ movie.title }}</text>
+            </view>
+            <text class="movie-type">{{ movie.type }}</text>
+            <text class="movie-actors">{{ movie.actors }}</text>
+            <view class="movie-footer">
+              <text class="movie-date">{{ movie.releaseDate }}</text>
+              <view class="presell-btn">
+                <text>预映</text>
+              </view>
             </view>
           </view>
         </view>
@@ -51,72 +63,25 @@ export default {
     return {
       activeTab: 'hot',
       hotMovies: [
-        {
-          id: 1,
-          title: "阿凡达3",
-          score: "9.2",
-          desc: "詹姆斯·卡梅隆执导的科幻巨制，讲述人类与纳美人的冲突与和解。",
-          tags: ["科幻", "冒险", "3D"],
-          poster: "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Avatar%203%20movie%20poster%202026&image_size=portrait_4_3"
-        },
-        {
-          id: 2,
-          title: "复仇者联盟5",
-          score: "8.8",
-          desc: "漫威超级英雄集结，共同对抗强大的反派。",
-          tags: ["动作", "科幻", "冒险"],
-          poster: "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Avengers%205%20movie%20poster%202026&image_size=portrait_4_3"
-        },
-        {
-          id: 3,
-          title: "星球大战10",
-          score: "8.5",
-          desc: "星球大战系列的最新续作，讲述新的冒险故事。",
-          tags: ["科幻", "动作", "太空"],
-          poster: "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Star%20Wars%2010%20movie%20poster%202026&image_size=portrait_4_3"
-        },
-        {
-          id: 4,
-          title: "流浪地球3",
-          score: "9.0",
-          desc: "中国科幻电影的里程碑，讲述人类带着地球寻找新家园的故事。",
-          tags: ["科幻", "灾难", "中国"],
-          poster: "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=The%20Wandering%20Earth%203%20movie%20poster%202026&image_size=portrait_4_3"
-        }
+        { id: 1, title: "超级马力欧银河大电影", score: "9.2", type: "喜剧 / 动画 / 冒险 / 动作", actors: "克里斯·帕拉特 / 安雅·泰勒-乔伊 / 杰克·布莱克", releaseDate: "2026-04-03", isShow: true, wantCount: "4.9万", poster: "https://img.alicdn.com/tfs/TB1superMario.jpg" },
+        { id: 2, title: "挽救计划", score: "9.3", type: "科幻 / 冒险 / 动作", actors: "瑞恩·高斯林 / 桑德拉·惠勒 / 詹姆斯·奥尔蒂斯", releaseDate: "2026-03-20", isShow: true, wantCount: "", poster: "https://img.alicdn.com/tfs/TB1rescuePlan.jpg" },
+        { id: 3, title: "河狸变身计划", score: "9.4", type: "冒险 / 喜剧 / 动画", actors: "佩珀·柯达 / 乔恩·哈姆 / 鲍比·莫尼汉", releaseDate: "2026-03-28", isShow: true, wantCount: "", poster: "https://img.alicdn.com/tfs/TB1beaverPlan.jpg" },
+        { id: 4, title: "我的妈耶", score: "", type: "家庭 / 剧情 / 喜剧", actors: "马思纯 / 白客 / 黄明昊 / 锤娜丽莎", releaseDate: "2026-04-03", isShow: false, wantCount: "38万", poster: "https://img.alicdn.com/tfs/TB1momYes.jpg" },
+        { id: 5, title: "我，许可", score: "", type: "剧情 / 喜剧", actors: "文淇 / 秦海璐 / 白客", releaseDate: "2026-04-03", isShow: false, wantCount: "45万", poster: "https://img.alicdn.com/tfs/TB1mePermission.jpg" },
+        { id: 6, title: "北回归线以北", score: "", type: "剧情 / 冒险", actors: "任达华 / 王姬 / 赵汉唐 / 江一燕", releaseDate: "2026-04-03", isShow: false, wantCount: "", poster: "https://img.alicdn.com/tfs/TB1northRegression.jpg" }
       ],
       comingMovies: [
-        {
-          id: 5,
-          title: "银河护卫队4",
-          releaseDate: "2026-05-01",
-          desc: "银河护卫队的新冒险，充满幽默和动作。",
-          tags: ["科幻", "动作", "喜剧"],
-          poster: "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Guardians%20of%20the%20Galaxy%204%20movie%20poster%202026&image_size=portrait_4_3"
-        },
-        {
-          id: 6,
-          title: "变形金刚7",
-          releaseDate: "2026-06-15",
-          desc: "变形金刚系列的最新作品，机器人之间的战争继续。",
-          tags: ["科幻", "动作", "机器人"],
-          poster: "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Transformers%207%20movie%20poster%202026&image_size=portrait_4_3"
-        },
-        {
-          id: 7,
-          title: "蜘蛛侠：新纪元",
-          releaseDate: "2026-07-20",
-          desc: "蜘蛛侠的新冒险，跨越多个平行宇宙。",
-          tags: ["动画", "科幻", "冒险"],
-          poster: "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Spider-Man%20New%20Era%20movie%20poster%202026&image_size=portrait_4_3"
-        }
+        { id: 7, title: "天才游戏", type: "悬疑 / 犯罪", actors: "彭昱畅 / 丁禹兮", releaseDate: "2026-04-04", wantCount: "3.2万", poster: "https://img.alicdn.com/tfs/TB1geniusGame.jpg" },
+        { id: 8, title: "角头：大桥头", type: "动作 / 犯罪", actors: "施名帅 / 郑人硕", releaseDate: "2026-04-10", wantCount: "", poster: "https://img.alicdn.com/tfs/TB1gangster.jpg" },
+        { id: 9, title: "穿普拉达的女王2", type: "剧情 / 喜剧", actors: "梅丽尔·斯特里普 / 安妮·海瑟薇 / 艾米莉·布朗特", releaseDate: "2026-04-30", wantCount: "4.1万", poster: "https://img.alicdn.com/tfs/TB1devilWearsPrada2.jpg" },
+        { id: 10, title: "迈克尔·杰克逊：巨星之路", type: "剧情 / 音乐 / 传记", actors: "贾法尔·杰克逊 / 科尔曼·多明戈 / 尼娅·朗", releaseDate: "2026-04-24", wantCount: "2.5万", poster: "https://img.alicdn.com/tfs/TB1michaelJackson.jpg" },
+        { id: 11, title: "小黄人与大怪兽", type: "喜剧 / 科幻 / 动画 / 冒险", actors: "皮埃尔·柯芬", releaseDate: "2026-05-01", wantCount: "1.7万", poster: "https://img.alicdn.com/tfs/TB1minions.jpg" }
       ]
     }
   },
   methods: {
     goToMovieDetail(movieId) {
-      uni.navigateTo({
-        url: `/pages/movie/detail?id=${movieId}`
-      })
+      uni.navigateTo({ url: `/pages/movie/detail?id=${movieId}` })
     }
   }
 }
@@ -132,17 +97,23 @@ export default {
   display: flex;
   background-color: #fff;
   border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .tab-item {
   flex: 1;
   text-align: center;
-  padding: 15px 0;
+  padding: 30rpx 0;
   position: relative;
+  color: #666;
+  font-size: 30rpx;
 }
 
 .tab-item.active {
   color: #ff4d4f;
+  font-weight: bold;
 }
 
 .tab-item.active::after {
@@ -151,33 +122,34 @@ export default {
   bottom: 0;
   left: 25%;
   width: 50%;
-  height: 2px;
+  height: 4rpx;
   background-color: #ff4d4f;
 }
 
 .movies-container {
-  padding: 10px;
+  padding: 20rpx;
 }
 
 .movies {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 24rpx;
 }
 
-.movie-item {
+.movie-card {
   display: flex;
   background-color: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 16rpx;
+  padding: 30rpx;
 }
 
 .movie-poster {
-  width: 100px;
-  height: 140px;
-  border-radius: 4px;
-  margin-right: 15px;
+  width: 180rpx;
+  height: 252rpx;
+  border-radius: 8rpx;
+  margin-right: 30rpx;
+  background-color: #eee;
+  flex-shrink: 0;
 }
 
 .movie-info {
@@ -185,50 +157,92 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-width: 0;
+}
+
+.movie-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
 }
 
 .movie-title {
-  font-size: 16px;
+  font-size: 32rpx;
   font-weight: bold;
   color: #333;
-  margin-bottom: 8px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .movie-score {
-  font-size: 14px;
-  color: #ff4d4f;
-  margin-bottom: 8px;
+  background-color: #ff4d4f;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+
+.score-value {
+  font-size: 24rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
+.movie-type {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.movie-actors {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 16rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.movie-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.movie-count {
+  font-size: 24rpx;
+  color: #ff9900;
 }
 
 .movie-date {
-  font-size: 14px;
+  font-size: 24rpx;
   color: #666;
-  margin-bottom: 8px;
 }
 
-.movie-desc {
-  font-size: 12px;
-  color: #999;
-  line-height: 1.4;
-  margin-bottom: 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+.buy-btn {
+  background-color: #ff4d4f;
+  padding: 12rpx 32rpx;
+  border-radius: 8rpx;
 }
 
-.movie-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.buy-btn text {
+  font-size: 26rpx;
+  color: #fff;
 }
 
-.tag {
-  font-size: 12px;
-  color: #666;
-  background-color: #f0f0f0;
-  padding: 2px 8px;
-  border-radius: 4px;
+.presell-btn {
+  background-color: #ff9900;
+  padding: 12rpx 32rpx;
+  border-radius: 8rpx;
+}
+
+.presell-btn text {
+  font-size: 26rpx;
+  color: #fff;
 }
 </style>
