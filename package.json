@@ -1,0 +1,24 @@
+{
+  "name": "taopiaopiao-miniprogram",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "@dcloudio/vue-cli-plugin-hbuilderx": "^2.0.2-3061420221215001",
+    "@dcloudio/vue-cli-plugin-uni": "^2.0.2-3061420221215001",
+    "@dcloudio/vue-cli-plugin-uni-optimize": "^2.0.2-3061420221215001",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-service": "~5.0.0"
+  },
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@dcloudio/uni-app": "^2.0.2-5000620260331001"
+  }
+}
